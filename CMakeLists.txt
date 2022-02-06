@@ -3,21 +3,26 @@ project(data_tum)
 
 find_package(ament_cmake REQUIRED)
 
-set(freiburg2_pioneer_360   https://vision.in.tum.de/rgbd/dataset/freiburg2/rgbd_dataset_freiburg2_pioneer_360.bag)
-set(freiburg2_pioneer_slam  https://vision.in.tum.de/rgbd/dataset/freiburg2/rgbd_dataset_freiburg2_pioneer_slam.bag)
-set(freiburg2_pioneer_slam2 https://vision.in.tum.de/rgbd/dataset/freiburg2/rgbd_dataset_freiburg2_pioneer_slam2.bag)
-set(freiburg2_pioneer_slam3 https://vision.in.tum.de/rgbd/dataset/freiburg2/rgbd_dataset_freiburg2_pioneer_slam3.bag)
+set(freiburg2_pioneer_360   https://vision.in.tum.de/rgbd/dataset/freiburg2/rgbd_dataset_freiburg2_pioneer_360.tgz)
+set(freiburg2_pioneer_slam  https://vision.in.tum.de/rgbd/dataset/freiburg2/rgbd_dataset_freiburg2_pioneer_slam.tgz)
+set(freiburg2_pioneer_slam2 https://vision.in.tum.de/rgbd/dataset/freiburg2/rgbd_dataset_freiburg2_pioneer_slam2.tgz)
+set(freiburg2_pioneer_slam3 https://vision.in.tum.de/rgbd/dataset/freiburg2/rgbd_dataset_freiburg2_pioneer_slam3.tgz)
 
 
 if(NOT DEFINED TUM_DATASET)
   set(TUM_DATASET freiburg2_pioneer_360 CACHE STRING "TUM Dataset")
 endif()
 
-if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${TUM_DATASET}.bag)
-  file(DOWNLOAD ${${TUM_DATASET}} ${TUM_DATASET}.bag)
-else()
-  message(WARNING "${TUM_DATASET} already exists. Download will be skipped")
-endif()
+set(TUM_DATASET_URL ${${TUM_DATASET}})
+include(FetchContent)
+FetchContent_Declare(
+  ${TUM_DATASET}
+  URL ${TUM_DATASET_URL}
+  SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/${TUM_DATASET}
+)
+FetchContent_MakeAvailable(${TUM_DATASET})
+
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
